@@ -1,0 +1,17 @@
+.content{
+    width: 100%;
+}
+.message{
+    background-color: #E7E7E7;
+    border: 1px solid #E7E7E7;
+    width: fit-content;
+    height: auto;
+    border-radius: 10px;
+    text-align: center;
+    padding: 5px;
+}
+
+.myMessage{
+    float: right;
+    background-color: #6E00FF;
+}
