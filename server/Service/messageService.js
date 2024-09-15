@@ -23,7 +23,7 @@ const messageSchema = Schema({
 
 const Message = mongoose.model('messages', messageSchema)
 
-export async function createMessage(req, res) {
+export async function createMessage(req, res) {// переделать через socket.io
     try {
         const token = req.headers.authorization.split(' ')[1]
         console.log("token = ", token)

@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', (data) => {
-
+        createMessage(data)// временно 
     })
 
     socket.on('join', ({ name, room }) => {
