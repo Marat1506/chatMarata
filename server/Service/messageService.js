@@ -23,31 +23,36 @@ const messageSchema = Schema({
 
 const Message = mongoose.model('messages', messageSchema)
 
-export async function createMessage(req, res) {// переделать через socket.io
+export async function createMessage(data) {
     try {
-        const token = req.headers.authorization.split(' ')[1]
-        console.log("token = ", token)
-        const user = await User.findOne({ token: token })
-        if (user.length == 0) {
-            return res.status(500).json("нет токена")
-        }
-        const chat = await Chat.findById(req.body.chatId)
+        console.log("dataaaae = ", data)
+        // const token = req.headers.token
+        // console.log("token = ", token)
+        // const user = await User.findOne({ token: token })
+        // if (user.length == 0) {
+        //     return res.status(500).json("нет токена")
+        // }
+        const chat = await Chat.findById(data.chatId)
+        console.log("chat = ", chat)
         if (!chat) {
             return res.status(500).json("Чат не найден")
         }
 
         const newMessage = {
-            userToken: token,
-            text: req.body.text,
+            userToken: data.userToken,
+            text: data.text,
             chatId: chat._id,
             date: new Date()
         };
 
-        chat.messages.push(newMessage);
+        // chat.messages.push(newMessage);
+        const m = await Message.create(newMessage)
+        console.log("m = ", m)
+        console.log("message = ", newMessage)
         await chat.save();
-        return res.status(201).json("Сообщение отправлено");
+        return "Сообщение отправлено";
     } catch (error) {
-        return res.status(500).json('Ошибка при отправке сообщения')
+        return 'Ошибка при отправке сообщения';
     }
 }
 
@@ -59,9 +64,26 @@ export async function getMessages(req, res) {
             return res.status(500).json("нет токена")
         }
 
-        const messages = await Message.find();
+        const userIds = req.query.users.split(',')
+        const chatId = req.query.activeChatId
+
+        console.log("activeChatId = ", chatId)
+
+        console.log("req = ", req.query.users.split(','))
+        const tokens = await User.aggregate([
+            {$match: {_id: {$in: userIds.map(id => new mongoose.Types.ObjectId(id))}}},
+            {$project: {token: 1}}
+        ])
+        console.log("TOKENS = ", tokens)
+        const userTokens = tokens.map(tokenObj => tokenObj.token)
+        console.log("userTokens = ", userTokens)
+        const messages = await Message.find({
+            userToken: {$in: userTokens},
+            chatId: {$in: chatId}
+        });
         return res.status(200).json(messages)
     } catch (error) {
         return res.status(500).json('ошибка при получении сообщений')
     }
 }
+

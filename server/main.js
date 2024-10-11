@@ -1,13 +1,14 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
-import { createUser, getUser, logIn } from './Service/userService.js'
+import { createUser, getUser, getUserByToken, logIn } from './Service/userService.js'
 import { createMessage, getMessages } from './Service/messageService.js'
-import { addUserToGroup, createGroup, getGroup, getGroupById, removeUserFromGroup } from './Service/groupsService.js'
+import { addUserToGroup, createGroup, getGroup, getGroupById, getUsersInGroup, removeUserFromGroup } from './Service/groupsService.js'
 import { checkMessage, checkUser } from './Middleware/validate.js'
 import { validationResult } from 'express-validator'
 import { Server } from 'socket.io'
 import http from 'http'
+import { createDirectChat, directChat } from './Service/directChatSchema.js'
 
 
 const app = express()
@@ -26,15 +27,21 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('User connected');
 
-    socket.on('gg', (data) => {
-        console.log('Received data:', data); 
-         console.log("sdfsdfdsfdslk = ", [1,2,3,4])
-         io.emit('responce', "Эщкере")
-    });
 
     socket.on('sendMessage', (data) => {
+        console.log("socket сообщение = ", data)
+        io.emit('responce', data)
         createMessage(data)// временно 
     })
+
+    socket.on('directContact', async (data) => {
+        try {
+            const response = await directChat(data);
+            socket.emit('contactEstablished', response);
+        } catch (error) {
+            socket.emit('error', { message: "Error establishing contact" });
+        }
+    });
 
     socket.on('join', ({ name, room }) => {
         socket.join(room);
@@ -50,8 +57,15 @@ app.use(cors())
 app.get('/getUser', async (req, res) => {
     getUser(req, res)
 })
+app.get('/getUserByToken', async (req, res) => {
+    getUserByToken(req, res)
+})
 app.get('/getMessages', async (req, res) => {
     getMessages(req, res)
+})
+app.get('/getUsersInGroup', async (req, res) => {
+   
+    getUsersInGroup(req, res)
 })
 app.post('/createUser', checkUser, async (req, res) => {
     const errors = validationResult(req)
@@ -81,6 +95,9 @@ app.get('/getGroupById', async (req, res) => {
 })
 app.post('/createGroup', async (req, res) => {
     createGroup(req, res)
+})
+app.post('/createDirectChat', (req, res) => {
+    createDirectChat(req, res)
 })
 app.post('/addUserToGroup', async (req, res) => {
     addUserToGroup(req, res)
