@@ -7,15 +7,19 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import { FormEvent, useState } from 'react';
 import { sendMessage } from '../../request/request';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxTypes';
+import Cookies from "js-cookie"
 
-export default function MenuForSending() {
+export default function MenuForSending({socket}) {
   const [message, setMessage] = useState('')
+  const activeChatId = useAppSelector(state => state.chat.activeChatId)
 
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault()
-    console.log("gg = ", message)
-    const data = await sendMessage({chatId: '66aca373bb79e741f765b966', text: message})
-    console.log("Datamessage = ", data)
+    // const data = await sendMessage({chatId: activeChatId, text: message})
+    socket.emit("sendMessage", {
+      chatId: activeChatId, text: message, userToken: Cookies.get("token")
+    })
     setMessage('')
   }
   return (

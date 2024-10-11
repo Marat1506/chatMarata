@@ -9,9 +9,12 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import { Group } from './type'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '../../hooks/reduxTypes'
+import { changeActiveChatId } from '../../store/reducer'
 
 export default function GroupsList() {
   const [group, setGroup] = useState<Group[]>([])
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -24,7 +27,9 @@ export default function GroupsList() {
   }, [])
   const handleClick = (id: string) => {
     navigate(`/main/chat/group/${id}`)
+    dispatch(changeActiveChatId({id: id}))
   }
+  if(group.length <= 0) return <div>loading</div>
   return (
     <Box className={styles.groups}>
       <List className={styles.groupList}>

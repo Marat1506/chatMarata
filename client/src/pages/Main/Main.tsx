@@ -4,19 +4,19 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 
-export default function Chat({socket}) {
+export default function Main({ socket }) {
 
-   useEffect(() => {
+  useEffect(() => {
     // Отправляем данные на сервер при рендере компонента
     socket.emit("gg", { user: "USERrrr" });
-    
+
   }, [socket]);
   return (
     <Box className={styles.content}>
       <Box className={styles.left}>
         <Sidebar />
       </Box>
-      <Outlet />
+      <Outlet socket={socket}/>
     </Box>
   )
 }

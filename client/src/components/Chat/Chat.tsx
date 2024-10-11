@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import SearchInput from "../SearchInput/SearchInput";
 import GroupsList from "../ChatGroups/GroupsList";
 import Peoples from "../Peoples/Peoples";
-import ChatHeader from '../ChatHeader/ChatHeader';
+// import ChatHeader from '../ChatHeader/ChatHeader';
 import Messages from '../Messages/Messages';
 import MenuForSending from '../MenuForSending/MenuForSending';
 import { Outlet } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { Outlet } from 'react-router-dom';
 
 
 
-export default function CHat() {
+export default function CHat({socket}) {
   return (
     <Box className={styles.content}>
 
@@ -26,8 +26,8 @@ export default function CHat() {
           <hr />
         </Box>
 
-        <Messages />
-        <MenuForSending />
+        <Messages socket={socket}/>
+        <MenuForSending socket={socket}/>
       </Box>
     </Box>
   )

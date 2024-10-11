@@ -4,7 +4,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import './index.css'
 import SignIn from './pages/Sign-in/Sign-in.tsx'
 import LogIn from './pages/Log-in/Log-in.tsx'
-import Chat from './pages/Main/Main.tsx'
+import Main from './pages/Main/Main.tsx'
 import Home from './components/Home/Home.tsx'
 import CHat from './components/Chat/Chat.tsx'
 import Notifications from './components/Notifications/Notifications.tsx'
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/main',
-    element: <Chat socket={socket}/>,
+    element: <Main socket={socket} />,
     children: [
       {
         path: '/main/home',
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/main/chat',
-        element: <CHat />,
+        element: <CHat socket={socket}/>,
         children: [
           {
             path: '/main/chat/group/:id',

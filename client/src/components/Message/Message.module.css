@@ -11,6 +11,10 @@
     padding: 5px;
 }
 
+.username {
+    text-align: start;
+}
+
 .myMessage{
     float: right;
     background-color: #6E00FF;

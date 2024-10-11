@@ -14,7 +14,7 @@
     background-color: white;
     border-radius: 20px;
     width: 100%;
-    height: auto;
+    height: 90dvh;
     padding: 20px;
     display: flex;
     flex-direction: column;

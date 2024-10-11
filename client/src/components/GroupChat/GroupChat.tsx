@@ -13,11 +13,13 @@ export default function GroupChat() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getGroupById(id)
+      console.log()
       setGroup(data)
       dispatch(changeActiveMessage({messages: data[0].messages}))
     }
     fetchData()
   }, [id, dispatch])
+  console.log("GROUP = ", group)
   if(group.length == 0){
     return <div>is Loading...</div>
   }

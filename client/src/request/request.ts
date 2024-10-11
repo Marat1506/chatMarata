@@ -37,9 +37,9 @@ export async function logIn(params:{email: string}) {
     }
 }
 
-export async function getMessages() {
+export async function getMessages({users, activeChatId}) {
     try {
-        const responce = await fetch('http://localhost:3000/getMessages', {
+        const responce = await fetch(`http://localhost:3000/getMessages?users=${users}&activeChatId=${activeChatId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json', 
@@ -96,6 +96,23 @@ export async function getGroup() {
         console.log("Ошибка при получении групп")
     }
 }
+export async function getUsersInGroup(id: string) {
+    try {
+        const responce = await fetch(`http://localhost:3000/getUsersInGroup?id=${id}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            },
+        })
+        const data = await responce.json()
+        console.log("userGroup = ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка при получении пользователей группы")
+    }
+}
 
 export async function getGroupById(id: string) {
     try {
@@ -129,5 +146,45 @@ export async function getUser() {
         return data
     } catch (error) {
         console.log("Ошибка при получении пользователей")
+    }
+}
+
+export async function getUserByToken(userToken: string) {
+    try {
+        const responce = await fetch(`http://localhost:3000/getUserByToken?userToken=${userToken}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            },
+        })
+        const data = await responce.json()
+        console.log("rrr= ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка при получении пользователей")
+    }
+}
+
+
+export async function createDirectChat(params) {
+    try {
+        const responce = await fetch('http://localhost:3000/createDirectChat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            },
+            body: JSON.stringify(params)
+
+        })
+        const data = await responce.json()
+        console.log("firectData = ", data)
+        return data
+
+    } catch (error) {
+        console.log("Ошибка при создании личного чата")
     }
 }

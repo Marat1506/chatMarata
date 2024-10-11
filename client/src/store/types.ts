@@ -4,4 +4,5 @@ export interface Chat {
     messages: Array<Message>,
     activeChatId: string,
     activeMessage: Array<Message>
+    infoCurrentChat: Array<object>
 }
