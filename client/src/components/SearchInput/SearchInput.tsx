@@ -5,6 +5,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Autocomplete, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { createDirectChat, getUser } from '../../request/request';
+import { useAppDispatch } from '../../hooks/reduxTypes';
+import { changeActiveDirectChatId } from '../../store/reducer';
 
 
 const top100Films = [
@@ -13,6 +15,8 @@ const top100Films = [
   { title: 'The Godfather: Part II', year: 1974 },]
 export default function SearchInput() {
   const [user, setUser] = useState([])
+  const [inputValue, setInputValue] = useState('')
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,9 +30,12 @@ export default function SearchInput() {
 
   const handleClick =  async(id: string, username: string) => {
     const direct = await createDirectChat({title: username, friendId: id})
+    dispatch(changeActiveDirectChatId({id: direct._id}))
     console.log("direct = ", direct)
     console.log(`Chat created with ${username}`);
+    setInputValue('');
   }
+
 
   if(!user) return <div>Loading...</div>
   return (
@@ -49,15 +56,21 @@ export default function SearchInput() {
         id="free-solo-demo"
         freeSolo
         options={user}
-        getOptionLabel={(option) => option.username} // отображаем имя пользователя
+        getOptionLabel={(option) => option.username}
+        value={null}
+        onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+        onChange={(event, value) => {
+          console.log("DDRR = ", value)
+          if(value){
+            handleClick(value._id, value.username)
+          }
+          
+        }} // навешиваем handleClick
         renderOption={(props, option) => (
           <li
             {...props}
             key={option.id}
-            onClick={() => {
-              console.log("DDRR = ", option)
-              handleClick(option._id, option.username)
-            }} // навешиваем handleClick
+            
           >
             {option.username}
           </li>

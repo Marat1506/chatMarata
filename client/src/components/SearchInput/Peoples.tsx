@@ -7,6 +7,6 @@ export default function Peoples() {
 
     })
   return (
-    <div>Peoples Meny</div>
+    <div>Peoples Many</div>
   )
 }

@@ -12,12 +12,26 @@ const chatSchema = Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     }],
-    admins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
-    }],
-    messages: [],
-});
+    roles: {
+            owner: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'users',
+                default: null,
+            },
+            admins: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'users',
+                default: [],
+            }],
+            participant: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'users',
+                default: [],
+            }]
+        }
+    
+    
+}, {timestamps: true});
 export const Chat = mongoose.model('groups', chatSchema)
 
 
@@ -34,8 +48,9 @@ export async function createGroup(req, res) {
         const chat = await Chat.create({
             title: req.body.title,
             users: [user._id],
-            admins: [user._id],
-            messages: []
+            roles: {
+                admins: [user._id]
+            },
 
         })
         console.log("ee")
@@ -48,7 +63,7 @@ export async function createGroup(req, res) {
 
 
     } catch (error) {
-        return res.status(500).json("Ошибка при создании чата")
+        return res.status(500).json("Ошибка при создании чата" + error)
 
     }
 }

@@ -167,6 +167,25 @@ export async function getUserByToken(userToken: string) {
     }
 }
 
+export async function getUserById(id: string) {
+    try {
+        const responce = await fetch(`http://localhost:3000/getUserByToken?getUserById=${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            },
+        })
+        const data = await responce.json()
+        console.log("rrr= ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка при получении пользователе по id")
+    }
+}
+
+
 
 export async function createDirectChat(params) {
     try {
@@ -186,5 +205,63 @@ export async function createDirectChat(params) {
 
     } catch (error) {
         console.log("Ошибка при создании личного чата")
+    }
+}
+
+export async function getDirectChat() {
+    try {
+        const responce = await fetch('http://localhost:3000/getDirectChat', {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            }
+        })
+        const data = await responce.json()
+        console.log("getDirectChat = ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка: " + error)
+    }
+}
+
+
+export async function getUsersIndirectChat(id: string) {
+    try {
+        const responce = await fetch(`http://localhost:3000/getUsersIndirectChat?id=${id}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            }
+
+        })
+        const data = await responce.json()
+        console.log("getUsersIndirectChat = ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка при получении пользователей личного чата  ")
+    }
+}
+
+export async function getTitlesForDirectChat(params) {
+    try {
+        const responce = await fetch(`http://localhost:3000/getTitlesForDirectChat?`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                "token": `${Cookies.get('token')}`
+            },
+            body: JSON.stringify(params)
+
+        })
+        const data = await responce.json()
+        console.log("getUsersIndirectChat = ", data)
+        return data
+    } catch (error) {
+        console.log("Ошибка при получении пользователей личного чата  ")
     }
 }

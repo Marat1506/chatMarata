@@ -8,20 +8,27 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { useState } from "react";
 import classnames from 'classnames'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function Sidebar() {
     const [activeButton, setActiveButton] = useState(0)
-
+    const navigate = useNavigate()
     const handleButton = (button: number) => {
         console.log("dfs = ", button)
         setActiveButton(button)
     }
+
+    const changeProfile = () => {
+        navigate("/main/settings")
+    }
     return (
         <Box className={styles.sidebar}>
             <Box className={styles.profile}>
-                <img src={MyProfile} width={"80px"} height={"80px"} />
+                <Button onClick={() => changeProfile()}>
+                    <img src={""} width={"80px"} height={"80px"} />
+                </Button>
+
             </Box>
 
             <Box className={styles.buttons}>

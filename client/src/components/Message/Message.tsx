@@ -18,11 +18,12 @@ export default function Message({ props }: Message) {
         }
         fetchData()
     }, [])
-    if(!user) return null
+    console.log("props = ", props)
+    if(user.length == 0) return null
     return (
         <Box className={styles.content} key={`${userToken + text}`}>
             <Box className={classNames(styles.message, userToken === Cookies.get('token')? styles.myMessage: '')}>
-                <Typography className={styles.username}></Typography>
+                <Typography className={styles.username}>{user[0].username}</Typography>
                 <Typography >{text}</Typography>
             </Box>
         </Box>

@@ -41,6 +41,10 @@ const router = createBrowserRouter([
           {
             path: '/main/chat/group/:id',
             element: <GroupChat />
+          },
+          {
+            path: '/main/chat/directchat/:id',
+            element: <GroupChat />
           }
         ]
       },

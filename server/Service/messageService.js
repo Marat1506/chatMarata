@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { User } from "./userService.js";
 import { Chat } from "./groupsService.js";
+import { directChats } from "./directChatSchema.js";
 
 
 const messageSchema = Schema({
@@ -19,7 +20,7 @@ const messageSchema = Schema({
     date: {
         type: Date,
     }
-})
+}, {timestamps: true})
 
 const Message = mongoose.model('messages', messageSchema)
 
@@ -32,10 +33,16 @@ export async function createMessage(data) {
         // if (user.length == 0) {
         //     return res.status(500).json("нет токена")
         // }
-        const chat = await Chat.findById(data.chatId)
+        let chat = await Chat.findById(data.chatId)
         console.log("chat = ", chat)
+        console.log("data = ", data)
         if (!chat) {
-            return res.status(500).json("Чат не найден")
+            console.log("чат не найден")
+            console.log("gg")
+            console.log("data.chatId = ", data.chatId)
+            chat = await directChats.findById(data.chatId)
+            console.log("chat = ", chat)
+            
         }
 
         const newMessage = {
@@ -50,6 +57,7 @@ export async function createMessage(data) {
         console.log("m = ", m)
         console.log("message = ", newMessage)
         await chat.save();
+        await directChats.save()
         return "Сообщение отправлено";
     } catch (error) {
         return 'Ошибка при отправке сообщения';

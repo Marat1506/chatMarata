@@ -14,13 +14,34 @@ const UserSchema = Schema({
     }],
     directChats: [{ // поле для личных чатов
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'directChats', // ссылка на модель личных чатов
+        ref: 'directChats',
         default: []
     }]
-})
+}, {timestamps: true})
 
 export const User = mongoose.model('users', UserSchema)
-
+// export async function aggregate(req, res) {
+//     try {
+//         const result = await User.updateMany(
+//             {},
+//             [
+//                 {
+//                     $set: {
+//                         groupChats: [],  // Переименовываем поле chats в groupChats
+//                         directChats: []        // Добавляем новое поле с массивом ObjectId
+//                     }
+//                 },
+//                 {
+//                     $unset: "chats"           // Удаляем старое поле chats
+//                 }
+//             ]
+//         );
+//         console.log('Aggregation result:', result);
+//         return res.status(200).json(result)
+//     } catch (error) {
+//         console.error('Error during aggregation:', error);
+//     }
+// }
 export async function createUser(req, res) {
     try {
         const user = await User.find({ email: req.body.email })
@@ -31,7 +52,6 @@ export async function createUser(req, res) {
                 email: req.body.email,
                 username: req.body.username,
                 token: `Bearer ${token}`,
-                chats: req.body.chats
             })
 
             return res.status(201).json({ status: 201, message: "Пользователь создан", user: user2 })
@@ -55,7 +75,7 @@ export async function logIn(req, res) {
     }
 }
 
-export async function getUser(req, res) {
+export async function getUsers(req, res) {
     try {
         const token = req.headers.token
         const user = await User.find({ token: token })
@@ -85,4 +105,41 @@ export async function getUserByToken(req, res) {
         return res.status(500).json("Ошибка при получении пользователей")
 
     }
+}
+
+export async function getUserById(req, res) {
+    console.log("rr")
+    const token = req.headers.token
+    const user = await User.find({ token: token })
+    if (user.length == 0) {
+        return res.status(500).json("нет токена")
+    }
+
+    console.log("req.body.users = ", req.query.id)
+    const userOne = await User.findOne({ _id: req.query.id})
+    console.log('userOne = ', userOne)
+
+    return res.json(userOne)
+}
+
+export async function createFotoUser(req, res) {
+    console.log("Пришел запрос File")
+    if (!req.files) {
+        return res.status(400).json({ msg: 'No file uploaded' });
+    }
+
+    const file = req.files.file
+    console.log("file = ", file)
+
+    const base64Data = file.data.toString('base64')
+    const fileType = file.mimetype
+    const imageUrl = `data${fileType};base64,${base64Data}`
+
+    return res.json({ imageUrl })
+
+    // if(!file) return res.json({error: 'Incorrect input name'})
+
+    // const newFileName = encodeURI(Date.now() + '-' + file.name)
+    // console.log("newFileName = ", newFileName)
+
 }

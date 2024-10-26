@@ -6,24 +6,25 @@ import { useAppDispatch } from '../../hooks/reduxTypes'
 import { changeActiveMessage } from '../../store/reducer'
 
 export default function GroupChat() {
-  const {id} = useParams()
-  const [group, setGroup] = useState<Group[]>([])
-  const dispatch = useAppDispatch()
+  // const {id} = useParams()
+  // const [group, setGroup] = useState<Group[]>([])
+  // const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getGroupById(id)
-      console.log()
-      setGroup(data)
-      dispatch(changeActiveMessage({messages: data[0].messages}))
-    }
-    fetchData()
-  }, [id, dispatch])
-  console.log("GROUP = ", group)
-  if(group.length == 0){
-    return <div>is Loading...</div>
-  }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await getGroupById(id)
+  //     console.log()
+  //     setGroup(data)
+  //     dispatch(changeActiveMessage({messages: data[0].messages}))
+  //   }
+  //   fetchData()
+  // }, [id, dispatch])
+  // console.log("GROUP = ", group)
+  // if(group.length == 0){
+  //   return <div>is Loading...</div>
+  // }
   return (
-    <div>{group[0].title}</div>
+    // <div>{group[0].title}</div>
+    <div>Gg</div>
   )
 }

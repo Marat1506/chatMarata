@@ -3,9 +3,11 @@ import { Chat } from "./types";
 
 const initialState: Chat = {
     messages: [],
-    activeChatId: '',
+    activeGroupId: '',
+    activeDirectChatId: '',
     activeMessage: [],
     infoCurrentChat: [],
+    currentChatType: ''
 }
 const chatSlice = createSlice({
     name: 'chat',
@@ -15,7 +17,12 @@ const chatSlice = createSlice({
 
         },
         changeActiveChatId: (state, action) => {
-            state.activeChatId = action.payload.id
+            state.activeGroupId = action.payload.id
+            state.currentChatType = 'group';
+        },
+        changeActiveDirectChatId: (state, action) => {
+            state.activeDirectChatId = action.payload.id
+            state.currentChatType = 'direct';
         },
         changeActiveMessage: (state, action) => {
             console.log("dfdfrere = ", action.payload.messages)
@@ -27,5 +34,5 @@ const chatSlice = createSlice({
     }
 })
 
-export const {changeMessages, changeActiveChatId, changeActiveMessage, changeInfoCurrentChat} = chatSlice.actions
+export const { changeMessages, changeActiveChatId, changeActiveMessage, changeInfoCurrentChat, changeActiveDirectChatId } = chatSlice.actions
 export default chatSlice.reducer

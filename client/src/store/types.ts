@@ -2,7 +2,9 @@ import { Message } from "../components/Message/types";
 
 export interface Chat {
     messages: Array<Message>,
-    activeChatId: string,
+    activeGroupId: string,
+    activeDirectChatId: string,
     activeMessage: Array<Message>
-    infoCurrentChat: Array<object>
+    infoCurrentChat: Array<object>,
+    currentChatType: string
 }

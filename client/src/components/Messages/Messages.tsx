@@ -2,24 +2,46 @@ import { Box } from "@mui/material";
 import Message from "../Message/Message";
 import styles from './Messages.module.css'
 import { useEffect, useState } from "react";
-import { getGroupById, getMessages, getUsersInGroup } from "../../request/request";
+import { getGroupById, getMessages, getUsersIndirectChat, getUsersInGroup } from "../../request/request";
 import { useAppSelector } from "../../hooks/reduxTypes";
 
 export default function Messages({ socket }) {
     const [data, setData] = useState<Array<object>>([])
     const store = useAppSelector(state => state.chat.activeMessage)
-    const activeChatId = useAppSelector(state => state.chat.activeChatId)
+    const activeGroupId = useAppSelector(state => state.chat.activeGroupId)
+    const activeDirectChatId = useAppSelector(state => state.chat.activeDirectChatId)
+    const currentChatType = useAppSelector(state => state.chat.currentChatType);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const responce = await getUsersInGroup(activeChatId)
-            console.log("responce = ", responce)
-            const data = await getMessages({ users: responce[0].users, activeChatId: activeChatId })
-            console.log("Messages = ", data)
-            setData(data)
+        setData([]); // Очищаем данные при смене типа чата
+        if (currentChatType === 'group') {
+            const fetchData = async () => {
+                const response = await getUsersInGroup(activeGroupId);
+                console.log("response = ", response);
+                const data = await getMessages({ users: response[0].users, activeChatId: activeGroupId });
+                console.log("Messages = ", data);
+                setData(data);
+            };
+            fetchData();
         }
-        fetchData()
-    }, [activeChatId])
+    }, [activeGroupId, currentChatType]);
+    
+    useEffect(() => {
+        setData([]); // Очищаем данные при смене типа чата
+        if (currentChatType === 'direct') {
+            const fetchData = async () => {
+                console.log("ERT = ", activeDirectChatId);
+                if (activeDirectChatId) {
+                    const response = await getUsersIndirectChat(activeDirectChatId);
+                    console.log("responseD = ", response);
+                    const data = await getMessages({ users: response[0].users, activeChatId: activeDirectChatId });
+                    console.log("MessagesD = ", data);
+                    setData(data);
+                }
+            };
+            fetchData();
+        }
+    }, [activeDirectChatId, currentChatType]);
 
     useEffect(() => {
         const handleResponse = (value) => {
